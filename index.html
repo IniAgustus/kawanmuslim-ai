@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator Ukuran Jubah — Jubah Dewasa Lengan Panjang</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background-color: #0d2a1e;
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(255,215,100,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(255,215,100,0.05) 0%, transparent 50%);
+      position: relative;
+      overflow-x: hidden;
+      color: #1a1a1a;
+    }
+
+    /* ── Geometric Islamic SVG background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='rgba(255,215,100,0.06)' stroke-width='0.8'%3E%3Cpolygon points='60,2 112,32 112,88 60,118 8,88 8,32'/%3E%3Cpolygon points='60,14 100,37 100,83 60,106 20,83 20,37'/%3E%3Cpolygon points='60,26 88,42 88,78 60,94 32,78 32,42'/%3E%3Cline x1='60' y1='2' x2='60' y2='118'/%3E%3Cline x1='8' y1='32' x2='112' y2='88'/%3E%3Cline x1='112' y1='32' x2='8' y2='88'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 120px 120px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── Top ornament ── */
+    .top-ornament {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .ornament-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .ornament-line .bar {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,215,100,0.6));
+    }
+    .ornament-line .bar.right {
+      background: linear-gradient(to left, transparent, rgba(255,215,100,0.6));
+    }
+
+    .ornament-diamond {
+      width: 8px;
+      height: 8px;
+      background: rgba(255,215,100,0.8);
+      transform: rotate(45deg);
+    }
+
+    .brand-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,215,100,0.7);
+      font-weight: 400;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 5vw, 34px);
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .header h1 span {
+      color: rgba(255,215,100,0.9);
+    }
+
+    .header p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      font-weight: 300;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Main card ── */
+    .card {
+      background: rgba(255,255,255,0.97);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      padding: 2rem 2rem 2.5rem;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,215,100,0.15);
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #8b7355;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e8ddd0;
+    }
+
+    /* ── Inputs ── */
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #5a4a3a;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #ddd5c8;
+      border-radius: 10px;
+      background: #faf8f5;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-wrap:focus-within {
+      border-color: #1a6b40;
+      box-shadow: 0 0 0 3px rgba(26,107,64,0.1);
+    }
+
+    .input-wrap input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 11px 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .input-wrap input::placeholder {
+      color: #bbb0a4;
+      font-weight: 400;
+    }
+
+    .input-wrap .unit {
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #9a8878;
+      border-left: 1px solid #ddd5c8;
+      white-space: nowrap;
+      background: #f3ede6;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ── Button ── */
+    .calc-btn {
+      width: 100%;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #1a6b40 0%, #0f4a2b 100%);
+      color: #ffffff;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .calc-btn:hover { opacity: 0.92; }
+    .calc-btn:active { transform: scale(0.98); }
+
+    .calc-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Result ── */
+    .result {
+      margin-top: 1.5rem;
+      display: none;
+    }
+
+    .result.visible { display: block; }
+
+    .result-inner {
+      background: linear-gradient(135deg, #f0faf5 0%, #e8f5ee 100%);
+      border: 1.5px solid #b8dfc9;
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+
+    .result-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 1.25rem;
+    }
+
+    .size-badge {
+      min-width: 72px;
+      height: 72px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      flex-shrink: 0;
+    }
+
+    .badge-M   { background: #dbeafe; color: #1d4ed8; }
+    .badge-L   { background: #dcfce7; color: #15803d; }
+    .badge-XL  { background: #fef9c3; color: #a16207; }
+    .badge-XXL { background: #ffe4e6; color: #be123c; }
+
+    .result-info h3 {
+      font-size: 13px;
+      font-weight: 500;
+      color: #4a6a55;
+      margin-bottom: 2px;
+    }
+
+    .result-info .size-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f4a2b;
+      line-height: 1.1;
+    }
+
+    .result-info .size-hint {
+      font-size: 12px;
+      color: #6a8a76;
+      margin-top: 2px;
+    }
+
+    /* ── Spec grid ── */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .spec-item {
+      background: rgba(255,255,255,0.8);
+      border-radius: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.9);
+    }
+
+    .spec-item .spec-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #7a9a85;
+      margin-bottom: 3px;
+    }
+
+    .spec-item .spec-val {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a3d2b;
+    }
+
+    /* ── Note box ── */
+    .note-box {
+      margin-top: 10px;
+      padding: 10px 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.55;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .note-box.info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+    }
+
+    .note-box.warn {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .note-box svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Error ── */
+    .error-msg {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #be123c;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    /* ── Toggle table ── */
+    .toggle-btn {
+      margin-top: 1.5rem;
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 13px;
+      color: #7a6a5a;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.2s;
+    }
+
+    .toggle-btn:hover { color: #1a6b40; }
+
+    .toggle-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Size table ── */
+    .table-wrap {
+      display: none;
+      margin-top: 1rem;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e5d9cb;
+    }
+
+    .table-wrap.visible { display: block; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    table thead tr {
+      background: #f0e8dc;
+    }
+
+    table th {
+      padding: 9px 10px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #7a6050;
+    }
+
+    table td {
+      padding: 9px 10px;
+      color: #2a2a2a;
+      border-top: 1px solid #ede5db;
+    }
+
+    table tbody tr:first-child td { border-top: none; }
+
+    table tbody tr.highlight td {
+      background: #e6f4ec;
+      font-weight: 600;
+      color: #0f4a2b;
+    }
+
+    table td:first-child {
+      font-weight: 700;
+      color: #1a6b40;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.3px;
+    }
+
+    .footer .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .footer .divider-line {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,215,100,0.2);
+    }
+
+    .footer .divider-diamond {
+      width: 5px;
+      height: 5px;
+      background: rgba(255,215,100,0.4);
+      transform: rotate(45deg);
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      .card { padding: 1.5rem 1.25rem 2rem; }
+      .input-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .spec-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <!-- Top ornament -->
+  <div class="top-ornament">
+    <div class="ornament-line">
+      <div class="bar"></div>
+      <div class="ornament-diamond"></div>
+      <div class="bar right"></div>
+    </div>
+    <span class="brand-label">Jubah Muslim Pria</span>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Cari Ukuran <span>Jubah</span> Anda</h1>
+    <p>Masukkan berat dan tinggi badan untuk rekomendasi ukuran yang tepat</p>
+  </div>
+
+  <!-- Main card -->
+  <div class="card">
+
+    <div class="section-label">Data Tubuh Anda</div>
+
+    <div class="input-row">
+      <div class="input-group">
+        <label for="weight">Berat Badan</label>
+        <div class="input-wrap">
+          <input type="number" id="weight" min="40" max="130" placeholder="cth. 70" />
+          <span class="unit">kg</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="height">Tinggi Badan</label>
+        <div class="input-wrap">
+          <input type="number" id="height" min="140" max="200" placeholder="cth. 168" />
+          <span class="unit">cm</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Cari Ukuran yang Sesuai
+    </button>
+
+    <!-- Error -->
+    <div class="error-msg" id="error-msg">
+      Mohon isi berat badan dan tinggi badan terlebih dahulu.
+    </div>
+
+    <!-- Result -->
+    <div class="result" id="result">
+      <div class="result-inner">
+        <div class="result-top">
+          <div class="size-badge" id="size-badge"></div>
+          <div class="result-info">
+            <h3>Ukuran yang disarankan</h3>
+            <div class="size-name" id="size-name"></div>
+            <div class="size-hint" id="size-hint"></div>
+          </div>
+        </div>
+        <div class="spec-grid" id="spec-grid"></div>
+        <div id="note-area"></div>
+      </div>
+    </div>
+
+    <!-- Toggle table -->
+    <button class="toggle-btn" onclick="toggleTable()" id="toggle-btn">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+      <span id="toggle-label">Lihat tabel ukuran lengkap</span>
+    </button>
+
+    <div class="table-wrap" id="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Size</th>
+            <th>Pjg Jubah</th>
+            <th>Lkr Dada</th>
+            <th>Pjg Tangan</th>
+            <th>Lkr Bawah</th>
+            <th>Berat (kg)</th>
+            <th>Tinggi (cm)</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr id="row-M"><td>M</td><td>131 cm</td><td>113 cm</td><td>57 cm</td><td>145 cm</td><td>55–60</td><td>160–163</td></tr>
+          <tr id="row-L"><td>L</td><td>133,5 cm</td><td>116 cm</td><td>58 cm</td><td>146 cm</td><td>61–70</td><td>163–167</td></tr>
+          <tr id="row-XL"><td>XL</td><td>136 cm</td><td>123 cm</td><td>60 cm</td><td>147 cm</td><td>71–83</td><td>167–170</td></tr>
+          <tr id="row-XXL"><td>XXL</td><td>138,5 cm</td><td>128 cm</td><td>61 cm</td><td>148 cm</td><td>84–95</td><td>170–175</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-diamond"></div>
+      <div class="divider-line"></div>
+    </div>
+    <p>Jubah Dewasa Lengan Panjang &mdash; Tabel ukuran berdasarkan standar produk</p>
+  </div>
+
+</div>
+
+<script>
+  const sizes = [
+    { name: 'M',   label: 'Size M',   panjang: '131 cm',   dada: '113 cm', tangan: '57 cm', bawah: '145 cm', wMin: 55, wMax: 60, hMin: 160, hMax: 163, hint: 'Berat 55–60 kg · Tinggi 160–163 cm' },
+    { name: 'L',   label: 'Size L',   panjang: '133,5 cm', dada: '116 cm', tangan: '58 cm', bawah: '146 cm', wMin: 61, wMax: 70, hMin: 163, hMax: 167, hint: 'Berat 61–70 kg · Tinggi 163–167 cm' },
+    { name: 'XL',  label: 'Size XL',  panjang: '136 cm',   dada: '123 cm', tangan: '60 cm', bawah: '147 cm', wMin: 71, wMax: 83, hMin: 167, hMax: 170, hint: 'Berat 71–83 kg · Tinggi 167–170 cm' },
+    { name: 'XXL', label: 'Size XXL', panjang: '138,5 cm', dada: '128 cm', tangan: '61 cm', bawah: '148 cm', wMin: 84, wMax: 95, hMin: 170, hMax: 175, hint: 'Berat 84–95 kg · Tinggi 170–175 cm' },
+  ];
+
+  const rankOf = n => ['M','L','XL','XXL'].indexOf(n);
+
+  function getSizeByWeight(w) {
+    for (let s of sizes) if (w >= s.wMin && w <= s.wMax) return s.name;
+    return w < 55 ? 'M' : 'XXL';
+  }
+
+  function getSizeByHeight(h) {
+    for (let s of sizes) if (h >= s.hMin && h <= s.hMax) return s.name;
+    return h < 160 ? 'M' : 'XXL';
+  }
+
+  function calculate() {
+    const w = parseFloat(document.getElementById('weight').value);
+    const h = parseFloat(document.getElementById('height').value);
+    const err = document.getElementById('error-msg');
+    const res = document.getElementById('result');
+
+    if (!w || !h || isNaN(w) || isNaN(h)) {
+      err.classList.add('visible');
+      res.classList.remove('visible');
+      res.style.display = 'none';
+      return;
+    }
+    err.classList.remove('visible');
+
+    const wSize = getSizeByWeight(w);
+    const hSize = getSizeByHeight(h);
+    const wRank = rankOf(wSize);
+    const hRank = rankOf(hSize);
+    const recommended = wRank >= hRank ? wSize : hSize;
+    const spec = sizes.find(s => s.name === recommended);
+
+    // Badge
+    const badge = document.getElementById('size-badge');
+    badge.textContent = recommended;
+    badge.className = 'size-badge badge-' + recommended;
+
+    document.getElementById('size-name').textContent = 'Size ' + recommended;
+    document.getElementById('size-hint').textContent = spec.hint;
+
+    // Specs
+    document.getElementById('spec-grid').innerHTML = `
+      <div class="spec-item"><div class="spec-label">Pjg Jubah</div><div class="spec-val">${spec.panjang}</div></div>
+      <div class="spec-item"><div class="spec-label">Lkr Dada</div><div class="spec-val">${spec.dada}</div></div>
+      <div class="spec-item"><div class="spec-label">Pjg Tangan</div><div class="spec-val">${spec.tangan}</div></div>
+    `;
+
+    // Notes
+    let noteHtml = '';
+    if (wSize !== hSize) {
+      const bigger = wRank > hRank ? wSize : hSize;
+      const smaller = wRank > hRank ? hSize : wSize;
+      noteHtml += `<div class="note-box info">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>Berat badan menunjuk ke <strong>${wSize}</strong>, tinggi badan menunjuk ke <strong>${hSize}</strong>. Disarankan <strong>${recommended}</strong> agar lebih nyaman dipakai.</span>
+      </div>`;
+    }
+
+    const outW = w < 55 || w > 95;
+    const outH = h < 160 || h > 175;
+    if (outW || outH) {
+      let warn = '';
+      if (outW) warn += `Berat ${w} kg di luar kisaran standar (55–95 kg). `;
+      if (outH) warn += `Tinggi ${h} cm di luar kisaran standar (160–175 cm). `;
+      noteHtml += `<div class="note-box warn" style="margin-top:${noteHtml ? '8px':'0'}">
+        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>${warn.trim()} Silakan hubungi kami untuk saran lebih lanjut.</span>
+      </div>`;
+    }
+
+    document.getElementById('note-area').innerHTML = noteHtml ? `<div style="margin-top:10px;">${noteHtml}</div>` : '';
+
+    // Highlight table row
+    document.querySelectorAll('#table-body tr').forEach(r => r.classList.remove('highlight'));
+    const row = document.getElementById('row-' + recommended);
+    if (row) row.classList.add('highlight');
+
+    res.style.display = 'block';
+    res.classList.add('visible');
+    res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function toggleTable() {
+    const wrap = document.getElementById('table-wrap');
+    const label = document.getElementById('toggle-label');
+    const visible = wrap.classList.toggle('visible');
+    label.textContent = visible ? 'Sembunyikan tabel ukuran' : 'Lihat tabel ukuran lengkap';
+  }
+
+  document.getElementById('weight').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+  document.getElementById('height').addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>
